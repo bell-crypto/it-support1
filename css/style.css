@@ -1,0 +1,344 @@
+:root {
+  --background-color: #f1f5f9;
+  --header-bg: #dc2626;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --shadow: rgba(0, 0, 0, 0.06);
+  --shadow-lg: rgba(0, 0, 0, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--background-color);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.header {
+  height: 60px;
+  background: var(--header-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 2rem;
+  box-shadow: 0 2px 4px var(--shadow);
+  z-index: 100;
+  position: relative;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo-wrapper {
+  height: 60px;
+  background: white;
+  padding: 0 3rem 0 2rem;
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+  display: flex;
+  align-items: center;
+}
+
+.logo-text {
+  color: var(--header-bg);
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.header-title {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  margin-left: 1rem;
+}
+
+.header-search {
+  position: relative;
+  width: 300px;
+}
+
+#search-input {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.22);
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+#search-input::placeholder {
+  color: rgba(255,255,255,0.75);
+}
+
+#search-input:focus {
+  background: white;
+  color: var(--text-primary);
+}
+
+#search-results-container {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px var(--shadow-lg);
+  max-height: 380px;
+  overflow-y: auto;
+  z-index: 999;
+}
+
+.search-result-item {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--card-border);
+  cursor: pointer;
+}
+
+.search-result-item:hover {
+  background: #f1f5f9;
+}
+
+.search-result-item strong {
+  display: block;
+}
+
+.search-result-item span {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.page-container {
+  height: calc(100vh - 60px);
+  overflow: auto;
+  position: relative;
+}
+
+#flowchart-main-container {
+  display: flex;
+  gap: 4rem;
+  align-items: flex-start;
+  position: relative;
+  min-height: 100%;
+  padding: 2rem 8rem 2rem 2rem;
+}
+
+.flowchart-level {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.flowchart-node {
+  background: white;
+  border: 1px solid var(--card-border);
+  border-top: 4px solid transparent;
+  border-radius: 12px;
+  padding: 1.25rem;
+  width: 220px;
+  min-height: 70px;
+  box-shadow: 0 4px 12px var(--shadow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+  transition: 0.25s;
+}
+
+.flowchart-node:hover {
+  transform: translateY(-2px);
+}
+
+.flowchart-node.active {
+  border: 3px solid var(--hover-color);
+  border-top: 4px solid var(--hover-color);
+  transform: scale(1.04);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.flowchart-node-text h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.flowchart-node-text p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+#connector-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+}
+
+#connector-svg path {
+  fill: none;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.9;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 500px;
+  padding: 2rem;
+  border-radius: 12px;
+  border-top: 5px solid #22c55e;
+  box-shadow: 0 10px 30px var(--shadow-lg);
+}
+
+.modal-content.contact {
+  border-top-color: var(--header-bg);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.close-btn {
+  border: none;
+  background: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.modal-body {
+  margin-top: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+#contact-fab {
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: none;
+  background: var(--header-bg);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  z-index: 900;
+}
+
+/*ส่วนadmin loggin*/
+.admin-page {
+  min-height: calc(100vh - 60px);
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-card {
+  width: 380px;
+  background: white;
+  border-radius: 14px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  border-top: 5px solid #dc2626;
+}
+
+.login-card h1 {
+  margin: 0 0 0.5rem;
+  color: #1e293b;
+}
+
+.login-card p {
+  margin-bottom: 1.5rem;
+  color: #64748b;
+}
+
+.login-card label {
+  display: block;
+  margin: 1rem 0 0.4rem;
+  font-weight: 600;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  outline: none;
+}
+
+.login-card input:focus {
+  border-color: #dc2626;
+}
+
+.login-card button {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.85rem;
+  border: none;
+  border-radius: 8px;
+  background: #dc2626;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#loginMessage {
+  margin-top: 1rem;
+  color: #dc2626;
+  font-size: 14px;
+}

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | IT Support Center</title>
+
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <button class="hamburger" id="toggleSidebar">☰</button>
+      <div class="brand-text">
+        <h2>IT Support</h2>
+        <p>Admin Panel</p>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <a href="dashboard.html">
+        <span class="menu-icon">📊</span>
+        <span class="menu-text">Dashboard</span>
+      </a>
+
+      <a href="categories.html">
+        <span class="menu-icon">📁</span>
+        <span class="menu-text">หัวข้อหลัก</span>
+      </a>
+
+      <a href="article_form.html">
+        <span class="menu-icon">⚠️</span>
+        <span class="menu-text">ปัญหา</span>
+      </a>
+
+      <a href="../index.html">
+        <span class="menu-icon">🌐</span>
+        <span class="menu-text">กลับไปหน้า User</span>
+      </a>
+
+      <a href="settings.html">
+        <span class="menu-icon">⚙️</span>
+        <span class="menu-text">ตั้งค่า</span>
+      </a>
+
+      <a href="#" id="logoutBtn">
+        <span class="menu-icon">🚪</span>
+        <span class="menu-text">ออกจากระบบ</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1>Dashboard</h1>
+        <p>ภาพรวมระบบ IT Support Center</p>
+      </div>
+
+      <div class="admin-user">Admin</div>
+    </header>
+
+    <section class="content">
+
+      <div class="welcome-card">
+        <h2>ยินดีต้อนรับเข้าสู่ระบบจัดการ</h2>
+        <p>จัดการหัวข้อหลัก ปัญหา และโครงสร้าง Flowchart ได้จากหน้านี้</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="label">หัวข้อหลัก</div>
+          <div class="number" id="totalCategory">0</div>
+          <div class="sub">Category จาก support_nodes</div>
+        </div>
+
+        <div class="stat-card green">
+          <div class="label">ปัญหา</div>
+          <div class="number" id="totalIssue">0</div>
+          <div class="sub">ข้อมูลใน articles</div>
+        </div>
+
+        <div class="stat-card orange">
+          <div class="label">วิธีแก้ไข</div>
+          <div class="number" id="totalSolution">0</div>
+          <div class="sub">Solution จาก articles</div>
+        </div>
+
+        <div class="stat-card purple">
+          <div class="label">Node ทั้งหมด</div>
+          <div class="number" id="totalNode">0</div>
+          <div class="sub">ข้อมูลใน support_nodes</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h3>หัวข้อหลักล่าสุด</h3>
+          <a href="categories.html">จัดการทั้งหมด</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>หัวข้อ</th>
+              <th>ประเภท</th>
+              <th>สี</th>
+              <th>ลำดับ</th>
+              <th>สถานะ</th>
+            </tr>
+          </thead>
+          <tbody id="categoryTable"></tbody>
+        </table>
+      </div>
+
+    </section>
+  </main>
+
+</div>
+
+<script src="../js/admin.js"></script>
+<script src="../js/dashboard.js"></script>
+
+</body>
+</html>

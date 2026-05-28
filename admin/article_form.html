@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>จัดการปัญหา | IT Support Center</title>
+
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <button class="hamburger" id="toggleSidebar">☰</button>
+
+      <div class="brand-text">
+        <h2>IT Support</h2>
+        <p>Admin Panel</p>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <a href="dashboard.html">
+        <span class="menu-icon">📊</span>
+        <span class="menu-text">Dashboard</span>
+      </a>
+
+      <a href="categories.html">
+        <span class="menu-icon">📁</span>
+        <span class="menu-text">หัวข้อหลัก</span>
+      </a>
+
+      <a href="article_form.html">
+        <span class="menu-icon">⚠️</span>
+        <span class="menu-text">ปัญหา</span>
+      </a>
+
+      <a href="../index.html">
+        <span class="menu-icon">🌐</span>
+        <span class="menu-text">กลับไปหน้า User</span>
+      </a>
+
+      <a href="settings.html">
+        <span class="menu-icon">⚙️</span>
+        <span class="menu-text">ตั้งค่า</span>
+      </a>
+
+      <a href="#" id="logoutBtn">
+        <span class="menu-icon">🚪</span>
+        <span class="menu-text">ออกจากระบบ</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div>
+        <h1>ปัญหา</h1>
+        <p>จัดการปัญหาและ STEP วิธีแก้ไข โดยอ้างอิงหัวข้อหลักจากฐานข้อมูลจริง</p>
+      </div>
+
+      <div class="admin-user">Admin</div>
+    </header>
+
+    <section class="content">
+      <div class="panel">
+
+        <div class="panel-header">
+          <h2>รายการปัญหา</h2>
+
+          <div class="header-actions">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="ค้นหาปัญหา เช่น printer, ปริ้น, wifi, ไม..."
+                autocomplete="off"
+              >
+
+              <button type="button" class="clear-search-btn" id="clearSearchBtn">×</button>
+            </div>
+
+            <select id="filterCategory" class="filter-select">
+              <option value="">ทุกหมวด</option>
+            </select>
+
+            <select id="sortSelect" class="filter-select">
+              <option value="latest">เรียงล่าสุด</option>
+              <option value="title_asc">ชื่อ A-Z</option>
+              <option value="steps_desc">Step มากสุด</option>
+              <option value="steps_asc">Step น้อยสุด</option>
+            </select>
+
+            <button class="add-btn" id="openFormBtn">+ เพิ่มปัญหา</button>
+          </div>
+        </div>
+
+        <div class="search-summary" id="searchSummary"></div>
+
+        <div class="form-box" id="articleFormBox">
+          <input type="hidden" id="articleId">
+
+          <div class="form-grid two-col">
+            <div>
+              <label>หัวข้อหลัก</label>
+              <select id="category">
+                <option value="">-- เลือกหัวข้อหลัก --</option>
+              </select>
+            </div>
+
+            <div>
+              <label>ชื่อปัญหา</label>
+              <input type="text" id="title" placeholder="เช่น สั่งพิมพ์ไม่ออก">
+            </div>
+          </div>
+
+          <div style="margin-top:14px;">
+            <label>รายละเอียดปัญหา</label>
+            <textarea id="problem" placeholder="เช่น เครื่องพิมพ์ไม่ออก"></textarea>
+          </div>
+
+          <div style="margin-top:14px;">
+            <label>ขั้นตอนวิธีแก้ไข</label>
+
+            <div id="stepsContainer"></div>
+
+            <button type="button" class="add-step-btn" onclick="addStep()">
+              + เพิ่ม Step
+            </button>
+          </div>
+
+          <div class="form-actions">
+            <button class="save-btn" id="saveBtn">บันทึก</button>
+            <button class="cancel-btn" id="cancelBtn">ยกเลิก</button>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>หัวข้อหลัก</th>
+              <th>ชื่อปัญหา</th>
+              <th>รายละเอียดปัญหา</th>
+              <th>จำนวน Step</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+
+          <tbody id="articleTable"></tbody>
+        </table>
+
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="../js/admin.js"></script>
+<script src="../js/articles.js"></script>
+
+</body>
+</html>

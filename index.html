@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Support Center</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-wrapper">
+        <span class="logo-text">Logo</span>
+      </div>
+      <span class="header-title">IT Support Center</span>
+    </div>
+
+    <div class="header-search">
+      <input 
+        type="text" 
+        id="search-input" 
+        placeholder="ค้นหาปัญหา..."
+        autocomplete="off"
+      >
+      <div id="search-results-container"></div>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <div id="flowchart-main-container">
+      <svg id="connector-svg"></svg>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="solution-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="solution-title">วิธีแก้ไขปัญหา</h2>
+        <button class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="solution-text"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="contact-modal">
+    <div class="modal-content contact">
+      <div class="modal-header">
+        <h2>ติดต่อแผนก IT Support</h2>
+        <button class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>เบอร์โทร:</strong> 02-123-4567 ต่อ 1234</p>
+        <p><strong>อีเมล:</strong> itsupport@example.co.th</p>
+      </div>
+    </div>
+  </div>
+
+  <button id="contact-fab">☎</button>
+
+  <!-- ตัวช่วยค้นหากลาง ใช้ร่วมกับ User และ Admin -->
+  <script src="js/search-helper.js?v=1"></script>
+
+  <!-- Script หลักของหน้า User -->
+  <script src="js/app.js?v=100"></script>
+
+</body>
+</html>

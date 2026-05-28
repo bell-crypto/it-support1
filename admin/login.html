@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - IT Support Center</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo-wrapper">
+      <span class="logo-text">Logo</span>
+    </div>
+    <span class="header-title">IT Support Center</span>
+  </div>
+</header>
+
+<main class="admin-page">
+  <div class="login-card">
+    <h1>Admin Login</h1>
+    <p>เข้าสู่ระบบเพื่อจัดการบทความ IT Support</p>
+
+    <form id="loginForm">
+      <label>Username</label>
+      <input type="text" id="username" required>
+
+      <label>Password</label>
+      <input type="password" id="password" required>
+
+      <button type="submit">เข้าสู่ระบบ</button>
+      <div id="loginMessage"></div>
+    </form>
+  </div>
+</main>
+
+<script src="../js/login.js"></script>
+</body>
+</html>
