@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
 from flask_cors import CORS
 import sqlite3
 from pathlib import Path
@@ -7,6 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "it_support.db"
 
 app = Flask(__name__, static_folder=".", static_url_path="")
+app.secret_key = "super-secret-key-change-this"
 CORS(app)
 
 
@@ -80,13 +81,17 @@ def init_db():
         )
     """)
 
-    cur.execute("INSERT OR IGNORE INTO admins (username, password) VALUES (?, ?)", ("admin", "admin123"))
+    cur.execute(
+        "INSERT OR IGNORE INTO admins (username, password) VALUES (?, ?)",
+        ("admin", "admin123")
+    )
 
     default_settings = {
         "site_name": "IT Support Center",
         "system_version": "1.0",
         "display_note": ""
     }
+
     for key, value in default_settings.items():
         cur.execute("""
             INSERT OR IGNORE INTO system_settings (setting_key, setting_value)
@@ -114,52 +119,82 @@ def login():
     password = data.get("password", "")
 
     conn = connect_db()
-    admin = conn.execute("SELECT * FROM admins WHERE username = ?", (username,)).fetchone()
+    admin = conn.execute(
+        "SELECT * FROM admins WHERE username = ?",
+        (username,)
+    ).fetchone()
     conn.close()
 
     if not admin:
         return jsonify(success=False, message="ไม่พบผู้ใช้นี้")
+
     if password != admin["password"]:
         return jsonify(success=False, message="รหัสผ่านไม่ถูกต้อง")
+
+    session["admin_logged_in"] = True
+    session["admin_username"] = username
+
     return jsonify(success=True, message="เข้าสู่ระบบสำเร็จ")
 
 
-@app.route("/api/logout", methods=["POST", "GET"])
+@app.route("/api/logout", methods=["POST"])
 def logout():
+    session.clear()
     return jsonify(success=True, message="ออกจากระบบสำเร็จ")
+
 
 @app.route("/api/admin_check", methods=["GET"])
 def admin_check():
+    if not session.get("admin_logged_in"):
+        return jsonify(success=False, message="กรุณาเข้าสู่ระบบก่อน"), 401
+
     return jsonify(success=True)
+
 
 @app.route("/api/get_nodes", methods=["GET"])
 @app.route("/api/support_nodes_list", methods=["GET"])
 def get_nodes():
     conn = connect_db()
-    rows = conn.execute("SELECT * FROM support_nodes ORDER BY sort_order ASC, id ASC").fetchall()
+    rows = conn.execute(
+        "SELECT * FROM support_nodes ORDER BY sort_order ASC, id ASC"
+    ).fetchall()
     conn.close()
     return jsonify(success=True, data=rows_to_dicts(rows))
 
 
 def get_articles_with_steps(order_sql="ORDER BY id DESC"):
     conn = connect_db()
-    articles = rows_to_dicts(conn.execute(f"SELECT * FROM articles {order_sql}").fetchall())
-    steps = rows_to_dicts(conn.execute("SELECT * FROM article_steps ORDER BY article_id ASC, step_order ASC").fetchall())
+    articles = rows_to_dicts(
+        conn.execute(f"SELECT * FROM articles {order_sql}").fetchall()
+    )
+    steps = rows_to_dicts(
+        conn.execute(
+            "SELECT * FROM article_steps ORDER BY article_id ASC, step_order ASC"
+        ).fetchall()
+    )
     conn.close()
 
     step_map = {}
+
     for step in steps:
         step_map.setdefault(step["article_id"], []).append(step)
+
     for article in articles:
         article["steps"] = step_map.get(article["id"], [])
+
     return articles
 
 
 @app.route("/api/admin_dashboard", methods=["GET"])
 def admin_dashboard():
     conn = connect_db()
-    nodes = rows_to_dicts(conn.execute("SELECT * FROM support_nodes ORDER BY sort_order ASC, id ASC").fetchall())
+    nodes = rows_to_dicts(
+        conn.execute(
+            "SELECT * FROM support_nodes ORDER BY sort_order ASC, id ASC"
+        ).fetchall()
+    )
     conn.close()
+
     articles = get_articles_with_steps("ORDER BY id DESC")
     return jsonify(success=True, support_nodes=nodes, articles=articles)
 
@@ -185,17 +220,21 @@ def article_create():
 
     conn = connect_db()
     cur = conn.cursor()
+
     cur.execute("""
         INSERT INTO articles (category, title, problem, solution)
         VALUES (?, ?, ?, ?)
     """, (category, title, problem, first_solution.strip()))
+
     article_id = cur.lastrowid
 
     for index, step in enumerate(steps):
         step_title = (step.get("title") or f"STEP {index + 1}").strip()
         step_detail = (step.get("detail") or "").strip()
+
         if not step_detail:
             continue
+
         cur.execute("""
             INSERT INTO article_steps (article_id, step_order, step_title, step_detail)
             VALUES (?, ?, ?, ?)
@@ -203,6 +242,7 @@ def article_create():
 
     conn.commit()
     conn.close()
+
     return jsonify(success=True, message="เพิ่มปัญหาสำเร็จ", id=article_id)
 
 
@@ -222,18 +262,22 @@ def article_update():
 
     conn = connect_db()
     cur = conn.cursor()
+
     cur.execute("""
         UPDATE articles
         SET category = ?, title = ?, problem = ?, solution = ?
         WHERE id = ?
     """, (category, title, problem, first_solution.strip(), article_id))
+
     cur.execute("DELETE FROM article_steps WHERE article_id = ?", (article_id,))
 
     for index, step in enumerate(steps):
         step_title = (step.get("title") or f"STEP {index + 1}").strip()
         step_detail = (step.get("detail") or "").strip()
+
         if not step_detail:
             continue
+
         cur.execute("""
             INSERT INTO article_steps (article_id, step_order, step_title, step_detail)
             VALUES (?, ?, ?, ?)
@@ -241,6 +285,7 @@ def article_update():
 
     conn.commit()
     conn.close()
+
     return jsonify(success=True, message="แก้ไขปัญหาสำเร็จ")
 
 
@@ -248,6 +293,7 @@ def article_update():
 def article_delete():
     data = request.get_json(silent=True) or {}
     article_id = int(data.get("id") or 0)
+
     if article_id <= 0:
         return jsonify(success=False, message="ไม่พบ ID")
 
@@ -256,6 +302,7 @@ def article_delete():
     conn.execute("DELETE FROM articles WHERE id = ?", (article_id,))
     conn.commit()
     conn.close()
+
     return jsonify(success=True, message="ลบสำเร็จ")
 
 
@@ -274,22 +321,33 @@ def support_node_create():
 
     conn = connect_db()
     cur = conn.cursor()
-    exists = cur.execute("SELECT id FROM support_nodes WHERE type = ? AND title = ? LIMIT 1", (node_type, title)).fetchone()
+
+    exists = cur.execute(
+        "SELECT id FROM support_nodes WHERE type = ? AND title = ? LIMIT 1",
+        (node_type, title)
+    ).fetchone()
+
     if exists:
         conn.close()
         return jsonify(success=False, message="มีหัวข้อนี้อยู่แล้ว")
 
     if sort_order <= 0:
-        row = cur.execute("SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_order FROM support_nodes WHERE type = ?", (node_type,)).fetchone()
+        row = cur.execute(
+            "SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_order FROM support_nodes WHERE type = ?",
+            (node_type,)
+        ).fetchone()
         sort_order = int(row["next_order"])
 
     cur.execute("""
         INSERT INTO support_nodes (parent_id, type, title, description, color, sort_order)
         VALUES (?, ?, ?, ?, ?, ?)
     """, (parent_id, node_type, title, description, color, sort_order))
+
     node_id = cur.lastrowid
+
     conn.commit()
     conn.close()
+
     return jsonify(success=True, message="เพิ่มข้อมูลสำเร็จ", id=node_id, sort_order=sort_order)
 
 
@@ -304,6 +362,7 @@ def support_node_update():
 
     if node_id <= 0:
         return jsonify(success=False, message="ไม่พบ ID")
+
     if not title:
         return jsonify(success=False, message="กรุณากรอกชื่อหัวข้อ")
 
@@ -315,6 +374,7 @@ def support_node_update():
     """, (title, description, color, sort_order, node_id))
     conn.commit()
     conn.close()
+
     return jsonify(success=True, message="แก้ไขสำเร็จ")
 
 
@@ -322,6 +382,7 @@ def support_node_update():
 def support_node_delete():
     data = request.get_json(silent=True) or {}
     node_id = int(data.get("id") or 0)
+
     if node_id <= 0:
         return jsonify(success=False, message="ไม่พบ ID")
 
@@ -329,15 +390,20 @@ def support_node_delete():
     conn.execute("DELETE FROM support_nodes WHERE id = ?", (node_id,))
     conn.commit()
     conn.close()
+
     return jsonify(success=True, message="ลบข้อมูลสำเร็จ")
 
 
 @app.route("/api/settings_get", methods=["GET"])
 def settings_get():
     conn = connect_db()
-    rows = conn.execute("SELECT setting_key, setting_value FROM system_settings").fetchall()
+    rows = conn.execute(
+        "SELECT setting_key, setting_value FROM system_settings"
+    ).fetchall()
     conn.close()
+
     settings = {row["setting_key"]: row["setting_value"] for row in rows}
+
     return jsonify(success=True, settings=settings)
 
 
@@ -352,6 +418,7 @@ def settings_update():
         return jsonify(success=False, message="กรุณากรอกชื่อระบบและเวอร์ชัน")
 
     conn = connect_db()
+
     for key, value in {
         "site_name": site_name,
         "system_version": system_version,
@@ -364,8 +431,10 @@ def settings_update():
               setting_value = excluded.setting_value,
               updated_at = CURRENT_TIMESTAMP
         """, (key, value))
+
     conn.commit()
     conn.close()
+
     return jsonify(success=True, message="บันทึกการตั้งค่าสำเร็จ")
 
 
