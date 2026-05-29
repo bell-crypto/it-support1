@@ -342,3 +342,9 @@ body {
   color: #dc2626;
   font-size: 14px;
 }
+
+.logo-img{
+  width:120px;
+  height:90px;
+  object-fit:contain;
+}
