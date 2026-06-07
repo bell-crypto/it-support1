@@ -22,12 +22,14 @@ body {
   overflow: hidden;
 }
 
+/* Header */
 .header {
-  height: 60px;
+  min-height: 60px;
   background: var(--header-bg);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   padding-right: 2rem;
   box-shadow: 0 2px 4px var(--shadow);
   z-index: 100;
@@ -37,6 +39,7 @@ body {
 .header-left {
   display: flex;
   align-items: center;
+  min-width: 0;
 }
 
 .logo-wrapper {
@@ -46,6 +49,7 @@ body {
   clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .logo-text {
@@ -54,16 +58,26 @@ body {
   font-size: 18px;
 }
 
+.logo-img {
+  width: 120px;
+  height: 90px;
+  object-fit: contain;
+  max-width: 100%;
+}
+
 .header-title {
   color: white;
   font-size: 20px;
   font-weight: 700;
   margin-left: 1rem;
+  line-height: 1.1;
+  white-space: normal;
 }
 
 .header-search {
   position: relative;
   width: 300px;
+  flex-shrink: 0;
 }
 
 #search-input {
@@ -278,7 +292,7 @@ body {
   z-index: 900;
 }
 
-/*ส่วนadmin loggin*/
+/* ส่วน admin login */
 .admin-page {
   min-height: calc(100vh - 60px);
   background: #f1f5f9;
@@ -343,8 +357,94 @@ body {
   font-size: 14px;
 }
 
-.logo-img{
-  width:120px;
-  height:90px;
-  object-fit:contain;
+/* Responsive เฉพาะ Header */
+@media (max-width: 1024px) {
+  .header {
+    padding-right: 1rem;
+  }
+
+  .logo-wrapper {
+    padding: 0 2rem 0 1rem;
+  }
+
+  .logo-img {
+    width: 100px;
+    height: 70px;
+  }
+
+  .header-title {
+    font-size: 18px;
+  }
+
+  .header-search {
+    width: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    min-height: auto;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0;
+    padding-bottom: 0.75rem;
+  }
+
+  .header-left {
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .logo-wrapper {
+    height: 60px;
+    padding: 0 2rem 0 1rem;
+  }
+
+  .logo-img {
+    width: 90px;
+    height: 58px;
+  }
+
+  .header-title {
+    font-size: 16px;
+    margin-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .header-search {
+    width: calc(100% - 1.5rem);
+    margin: 0 0.75rem;
+  }
+
+  .page-container {
+    height: calc(100vh - 116px);
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-wrapper {
+    height: 56px;
+    padding: 0 1.5rem 0 0.75rem;
+  }
+
+  .logo-img {
+    width: 78px;
+    height: 52px;
+  }
+
+  .header-title {
+    font-size: 14px;
+    margin-left: 0.5rem;
+  }
+
+  #search-input {
+    font-size: 13px;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .page-container {
+    height: calc(100vh - 112px);
+  }
 }
