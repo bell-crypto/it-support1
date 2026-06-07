@@ -16,9 +16,8 @@
 html {
   width: 100%;
   min-height: 100%;
-  overflow-x: auto;
+  overflow: auto;
   -webkit-text-size-adjust: 100%;
-  touch-action: manipulation;
 }
 
 body {
@@ -27,8 +26,7 @@ body {
   background: var(--background-color);
   color: var(--text-primary);
   min-height: 100vh;
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow: auto;
 }
 
 /* Header */
@@ -145,6 +143,8 @@ body {
   min-height: calc(100vh - 60px);
   overflow: auto;
   position: relative;
+  touch-action: pan-x pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
 }
 
 #flowchart-main-container {
@@ -155,6 +155,8 @@ body {
   min-height: 100%;
   min-width: max-content;
   padding: 2rem 8rem 2rem 2rem;
+  transform-origin: top left;
+  touch-action: pan-x pan-y pinch-zoom;
 }
 
 .flowchart-level {
