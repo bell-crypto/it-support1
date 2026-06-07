@@ -39,3 +39,34 @@ function matchArticleSearch(article, keyword) {
 
   return articleSearchText(article).includes(searchKeyword);
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("search-input");
+
+  if (!searchInput) return;
+
+  searchInput.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter") return;
+
+    e.preventDefault();
+
+    const firstResult = document.querySelector(".search-result-item");
+
+    if (firstResult) {
+      firstResult.click();
+      return;
+    }
+
+    const keyword = searchInput.value.trim();
+
+    if (!keyword) return;
+
+    const matchedArticle = (window.articles || []).find(article =>
+      matchArticleSearch(article, keyword)
+    );
+
+    if (matchedArticle) {
+      window.location.href = `admin/article_form.html?id=${matchedArticle.id}`;
+    }
+  });
+});
